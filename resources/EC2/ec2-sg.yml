@@ -14,3 +14,7 @@ Resources:
           FromPort: 8
           ToPort: -1
           CidrIp: 10.0.0.0/24
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 10.0.1.0/24

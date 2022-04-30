@@ -29,7 +29,13 @@ resources:
   - ${file(./resources/RDS/db-subnet-groups.yml)}
   - ${file(./resources/RDS/rds-sg.yml)}
 
-  # prevuild a Role for monitoring RDS
+  # pre-build a Role for monitoring RDS
   - ${file(./resources/IAM/monitoring-role.yml)}
   # build RDS DB instance
   - ${file(./resources/RDS/instance.yml)}
+
+  # pre-build a Network to connet between Cloud9 & EC2
+  - ${file(./resources/EC2/vpc-endpoints.yml)}
+
+  # build Cloud9 to execute SQL to RDS
+  - ${file(./resources/Cloud9/RDS-manager.yml)}

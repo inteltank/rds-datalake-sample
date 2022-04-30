@@ -1,0 +1,36 @@
+Resources:
+  EndpointFromSSM:
+    Type: AWS::EC2::VPCEndpoint
+    Properties: 
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !GetAtt EC2SecurityGroupDefault.GroupId
+      ServiceName: com.amazonaws.ap-northeast-1.ssm
+      SubnetIds: 
+        - !GetAtt EC2SubnetA.SubnetId
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC
+
+  EndpointFromSSMMessages:
+    Type: AWS::EC2::VPCEndpoint
+    Properties: 
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !GetAtt EC2SecurityGroupDefault.GroupId
+      ServiceName: com.amazonaws.ap-northeast-1.ssmmessages
+      SubnetIds: 
+        - !GetAtt EC2SubnetA.SubnetId
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC
+
+  EndpointFromEC2Messages:
+    Type: AWS::EC2::VPCEndpoint
+    Properties: 
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !GetAtt EC2SecurityGroupDefault.GroupId
+      ServiceName: com.amazonaws.ap-northeast-1.ec2messages
+      SubnetIds: 
+        - !GetAtt EC2SubnetA.SubnetId
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC

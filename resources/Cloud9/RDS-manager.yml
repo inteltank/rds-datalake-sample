@@ -1,0 +1,14 @@
+Resources:
+  Cloud9:
+    Type: AWS::Cloud9::EnvironmentEC2
+    DeletionPolicy: "Delete"
+    Properties: 
+      AutomaticStopTimeMinutes: 240
+      ConnectionType: CONNECT_SSM
+      Description: Cloud9 Environment to execute SQL to RDS
+      ImageId: resolve:ssm:/aws/service/cloud9/amis/amazonlinux-2-x86_64
+      InstanceType: t2.micro
+      Name: ${self:custom.DBInstanceID}
+      OwnerArn: arn:aws:iam::${self:custom.accountId}:user/Administrator
+      SubnetId: !GetAtt EC2SubnetA.SubnetId
+
