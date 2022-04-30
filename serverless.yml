@@ -1,0 +1,14 @@
+service: rds-datalake
+
+provider:
+  name: aws
+  stage: ${env:STAGE}
+  region: ${env:AWS_DEFAULT_REGION}
+
+custom:
+
+plugins:
+  - serverless-cloudformation-changesets
+  - serverless-cloudformation-sub-variables
+
+resources:
