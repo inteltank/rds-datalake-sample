@@ -1,0 +1,27 @@
+Resources: 
+  MonitoringRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "rds.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+            Condition:
+              StringLike:
+                aws:SourceArn: arn:aws:rds:${self:provider.region}:${self:custom.accountId}:db:${self:custom.DBInstanceID}
+              StringEquals:
+                aws:SourceAccount: ${self:custom.accountId}
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'

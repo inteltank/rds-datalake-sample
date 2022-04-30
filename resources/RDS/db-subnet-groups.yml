@@ -1,0 +1,9 @@
+Resources:
+  DBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupName: ${self:provider.stage}-${self:service}
+      DBSubnetGroupDescription: "-"
+      SubnetIds: 
+        - !GetAtt EC2SubnetA.SubnetId
+        - !GetAtt EC2SubnetC.SubnetId

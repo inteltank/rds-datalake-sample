@@ -6,12 +6,30 @@ provider:
   region: ${env:AWS_DEFAULT_REGION}
 
 custom:
+  accountId: ${env:AWS_ACCOUNT_ID}
+  DBInstanceID: ${self:provider.stage}-${self:service}
+  DBName: rdsDatalake
+  DBInstanceClass: db.t2.micro
+  DBAllocatedStorage: 20
+  DBUsername: rdsDatalake
+  DBPassword: rdsDatalake
+  AvailabilityZone:  ${self:provider.region}a
+    - ${self:provider.region}c
 
 plugins:
   - serverless-cloudformation-changesets
   - serverless-cloudformation-sub-variables
 
 resources:
-  # pre-build a VPC & SG to deploy rds
-  - ${file(./resources/EC2-SG/default.yml)}
-  - ${file(./resources/EC2-VPC/default.yml)}
+  # pre-build a Network to deploy rds
+  - ${file(./resources/EC2/vpc.yml)}
+  - ${file(./resources/EC2/ec2-sg.yml)}
+  - ${file(./resources/EC2/ec2-subnet-A.yml)}
+  - ${file(./resources/EC2/ec2-subnet-C.yml)}
+  - ${file(./resources/RDS/db-subnet-groups.yml)}
+  - ${file(./resources/RDS/rds-sg.yml)}
+
+  # prevuild a Role for monitoring RDS
+  - ${file(./resources/IAM/monitoring-role.yml)}
+  # build RDS DB instance
+  - ${file(./resources/RDS/instance.yml)}

@@ -1,0 +1,40 @@
+Resources:
+  RDSInstance:
+    Type: 'AWS::RDS::DBInstance'
+    DeletionPolicy: "Delete"
+    Properties:
+      # DB names
+      DBInstanceIdentifier: ${self:custom.DBInstanceID}
+      DBName: ${self:custom.DBName}
+      # DB Network
+      PubliclyAccessible: false
+      DBSecurityGroups: 
+        - !Ref RDSSecurityGroup
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref EC2SecurityGroupDefault
+        - !Ref RDSSecurityGroup
+      # DB Hardware
+      DBInstanceClass: ${self:custom.DBInstanceClass}
+      AllocatedStorage: ${self:custom.DBAllocatedStorage}
+      StorageType: gp2 
+      MultiAZ: false
+      # DB Software
+      Engine: postgres
+      EngineVersion: 12
+      # DB User
+      MasterUsername: ${self:custom.DBUsername}
+      MasterUserPassword: ${self:custom.DBPassword}
+      # DB monitoring
+      MonitoringInterval: '60'
+      MonitoringRoleArn: !GetAtt MonitoringRole.Arn
+      # Backup
+      BackupRetentionPeriod: 7
+      PreferredBackupWindow: "18:00-18:30"
+      CopyTagsToSnapshot: true
+      # Maintenance
+      PreferredMaintenanceWindow: "sat:19:00-sat:19:30"
+      AutoMinorVersionUpgrade: false
+
+        
+
