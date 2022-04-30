@@ -12,3 +12,6 @@ plugins:
   - serverless-cloudformation-sub-variables
 
 resources:
+  # pre-build a VPC & SG to deploy rds
+  - ${file(./resources/EC2-SG/default.yml)}
+  - ${file(./resources/EC2-VPC/default.yml)}
