@@ -1,0 +1,15 @@
+start-exporting-snapshot:
+  handler: functions/start-exporting-snapshot/app.handler
+  name: ${self:provider.stage}-${self:service}-start-exporting-snapshot
+  memorySize: 512 
+  timeout: 10 
+  provisionedConcurrency: 3 
+  reservedConcurrency: 5 
+  tracing: PassThrough 
+  role: StartExportingSnapshotRole
+  package:
+    patterns:
+      - '!**'
+      - functions/start-exporting-snapshot/**
+  layers:
+   - !Ref SeleniumLambdaLayer

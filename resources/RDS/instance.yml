@@ -8,12 +8,9 @@ Resources:
       DBName: ${self:custom.DBName}
       # DB Network
       PubliclyAccessible: false
-      DBSecurityGroups: 
-        - !Ref RDSSecurityGroup
       DBSubnetGroupName: !Ref DBSubnetGroup
       VPCSecurityGroups:
         - !Ref EC2SecurityGroupDefault
-        - !Ref RDSSecurityGroup
       # DB Hardware
       DBInstanceClass: ${self:custom.DBInstanceClass}
       AllocatedStorage: ${self:custom.DBAllocatedStorage}

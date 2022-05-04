@@ -1,0 +1,14 @@
+Resources:
+  SnapshotStore:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    DependsOn: S3KeyAlias
+    Properties:
+      BucketName: ${self:provider.stage}-${self:service}-${self:custom.accountId}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            KMSMasterKeyID: arn:aws:kms:${self:provider.region}:${self:custom.accountId}:alias/s3
+            SSEAlgorithm: 'aws:kms'
+
+

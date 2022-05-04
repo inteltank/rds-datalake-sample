@@ -1,8 +1,0 @@
-Resources:
-  EC2SubnetC:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.2.0/24
-      AvailabilityZone: ${self:provider.region}c
-      MapPublicIpOnLaunch: false

@@ -1,0 +1,8 @@
+Selenium:
+  name: selenium-layer
+  path: 'layers/selenium'
+  compatibleRuntimes:
+    - python3.8
+  compatibleArchitectures:
+    - x86_64
+

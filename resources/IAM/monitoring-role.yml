@@ -9,7 +9,7 @@ Resources:
             Effect: "Allow"
             Principal: 
               Service: 
-                - "rds.amazonaws.com"
+                - "monitoring.rds.amazonaws.com"
             Action: 
               - "sts:AssumeRole"
             Condition:

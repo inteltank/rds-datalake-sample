@@ -1,0 +1,18 @@
+Resources:
+  S3Key:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::${self:custom.accountId}:root
+            Action: 'kms:*'
+            Resource: '*'
+  S3KeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/s3
+      TargetKeyId: !Ref S3Key

@@ -1,0 +1,17 @@
+Resources:
+  EventCreateSnapshot:
+    Type: AWS::Events::Rule
+    Properties: 
+      Name: event-create-snapshot
+      Description: Event When rds-datalaks's snapshot is created
+      # EventBusName:
+      EventPattern: 
+        source:
+          - "aws.rds"
+        detail-type:
+          - "RDS DB Snapshot Event"
+        resources: 
+          - arn:aws:rds:${self:provider.region}:${self:custom.accountId}:db:${self:provider.stage}-${self:service}
+      RoleArn: !GetAtt EventBridgeRole.Arn
+      State: ENABLED
+      # Targets: 

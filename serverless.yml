@@ -1,9 +1,22 @@
 service: rds-datalake
 
+frameworkVersion: '3'
+params:
+  prod:
+    branchName: main
+  stg:
+    branchName: develop
+  dev:
+    branchName: feat/*
 provider:
   name: aws
+  deploymentMethod: direct
+  runtime: python3.8
   stage: ${env:STAGE}
   region: ${env:AWS_DEFAULT_REGION}
+  notificationArns:
+    - arn:aws:sns:ap-northeast-1:618687395710:notice_aws
+
 
 custom:
   accountId: ${env:AWS_ACCOUNT_ID}
@@ -13,21 +26,32 @@ custom:
   DBAllocatedStorage: 20
   DBUsername: rdsDatalake
   DBPassword: rdsDatalake
-  AvailabilityZone:  ${self:provider.region}a
-    - ${self:provider.region}c
 
 plugins:
   - serverless-cloudformation-changesets
   - serverless-cloudformation-sub-variables
 
+functions:
+  - ${file(./functions/start-exporting-snapshot/resource.yml)}
+
+layers:
+  Selenium:
+    name: selenium-layer
+    path: layers/selenium
+    compatibleRuntimes:
+      - python3.8
+    compatibleArchitectures:
+      - x86_64
+
+
 resources:
   # pre-build a Network to deploy rds
   - ${file(./resources/EC2/vpc.yml)}
   - ${file(./resources/EC2/ec2-sg.yml)}
-  - ${file(./resources/EC2/ec2-subnet-A.yml)}
-  - ${file(./resources/EC2/ec2-subnet-C.yml)}
+  - ${file(./resources/EC2/private-subnet-C.yml)}
+  - ${file(./resources/EC2/private-subnet-D.yml)}
   - ${file(./resources/RDS/db-subnet-groups.yml)}
-  - ${file(./resources/RDS/rds-sg.yml)}
+
 
   # pre-build a Role for monitoring RDS
   - ${file(./resources/IAM/monitoring-role.yml)}
@@ -35,7 +59,23 @@ resources:
   - ${file(./resources/RDS/instance.yml)}
 
   # pre-build a Network to connet between Cloud9 & EC2
+  - ${file(./resources/EC2/public-subnet.yml)}
   - ${file(./resources/EC2/vpc-endpoints.yml)}
+  - ${file(./resources/EC2/ec2-internet-gw.yml)}
+  - ${file(./resources/EC2/ec2-route-tables.yml)}
+  - ${file(./resources/EC2/ec2-elastic-ip.yml)}
+  - ${file(./resources/EC2/ec2-natgateway.yml)}
 
   # build Cloud9 to execute SQL to RDS
   - ${file(./resources/Cloud9/RDS-manager.yml)}
+
+  # make Snapshot Pool
+  #  - ${file(./resources/KMS/S3Bucket-Key.yml)}
+  #  - ${file(./resources/S3/snapshot-store.yml)}
+
+  # make eventbridge rule
+  - ${file(./resources/IAM/eventbridge-role.yml)}
+  - ${file(./resources/EventBridge/create-snapshot.yml)}
+
+  # prepare IAM role for functions
+  - ${file(./resources/IAM/start-exporting-snapshot-role.yml)}

@@ -1,0 +1,10 @@
+Resources:
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: ${self:provider.region}a
+      Tags:
+        - Key: Name
+          Value: public-subnet

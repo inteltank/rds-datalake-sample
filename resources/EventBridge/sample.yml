@@ -1,0 +1,145 @@
+Resources:
+  EventRuleRegion1:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: Routes to us-east-1 event bus
+      EventBusName: MyBusName
+      State: ENABLED
+      EventPattern:
+        source:
+          - MyTestApp
+        detail:
+          - MyTestAppDetail
+      Targets:
+        - Arn: >-
+            arn:aws:events:us-east-1:123456789012:event-bus/CrossRegionDestinationBus
+          Id: ' CrossRegionDestinationBus'
+          RoleArn: !GetAtt 
+            - EventBridgeIAMrole
+            - Arn
+  EventBridgeIAMrole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: !Sub events.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: PutEventsDestinationBus
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'events:PutEvents'
+                Resource:
+                  - >-
+                    arn:aws:events:us-east-1:123456789012:event-bus/CrossRegionDestinationBus
+MyNewEventsRule:
+  Type: 'AWS::Events::Rule'
+  Properties:
+    Description: Test Events Rule
+    Name: mynewabc
+    EventPattern:
+      source:
+        - aws.ec2
+    State: ENABLED
+    Targets:
+      - Arn: 'arn:aws:sqs:us-west-2:081035103721:demoSQS'
+        Id: Id1234
+        RetryPolicy:
+          MaximumRetryAttempts: 4
+          MaximumEventAgeInSeconds: 400
+        DeadLetterConfig:
+          Arn: 'arn:aws:sqs:us-west-2:081035103721:demoDLQ'
+
+ScheduledRule: 
+  Type: AWS::Events::Rule
+  Properties: 
+    Description: "ScheduledRule"
+    ScheduleExpression: "rate(10 minutes)"
+    State: "ENABLED"
+    Targets: 
+      - 
+        Arn: 
+          Fn::GetAtt: 
+            - "LambdaFunction"
+            - "Arn"
+        Id: "TargetFunctionV1"
+PermissionForEventsToInvokeLambda: 
+  Type: AWS::Lambda::Permission
+  Properties: 
+    FunctionName: !Ref "LambdaFunction"
+    Action: "lambda:InvokeFunction"
+    Principal: "events.amazonaws.com"
+    SourceArn: 
+      Fn::GetAtt: 
+        - "ScheduledRule"
+        - "Arn"
+
+EventRule: 
+  Type: AWS::Events::Rule
+  Properties: 
+    Description: "EventRule"
+    EventPattern: 
+      source: 
+        - "aws.ec2"
+      detail-type: 
+        - "EC2 Instance State-change Notification"
+      detail: 
+        state: 
+          - "stopping"
+    State: "ENABLED"
+    Targets: 
+      - 
+        Arn: 
+          Fn::GetAtt: 
+            - "LambdaFunction"
+            - "Arn"
+        Id: "TargetFunctionV1"
+PermissionForEventsToInvokeLambda: 
+  Type: AWS::Lambda::Permission
+  Properties: 
+    FunctionName: 
+      Ref: "LambdaFunction"
+    Action: "lambda:InvokeFunction"
+    Principal: "events.amazonaws.com"
+    SourceArn: 
+      Fn::GetAtt: 
+        - "EventRule"
+        - "Arn"
+
+
+OpsEventRule: 
+  Type: AWS::Events::Rule
+  Properties: 
+    Description: "EventRule"
+    EventPattern: 
+      detail-type: 
+        - "AWS API Call via CloudTrail"
+      detail: 
+        userIdentity: 
+          type: 
+            - "Root"
+    State: "ENABLED"
+    Targets: 
+      - 
+        Arn: 
+          Ref: "MySNSTopic"
+        Id: "OpsTopic"
+EventTopicPolicy:
+  Type: 'AWS::SNS::TopicPolicy'
+  Properties:
+    PolicyDocument:
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: events.amazonaws.com
+          Action: 'sns:Publish'
+          Resource: '*'
+    Topics:
+      - !Ref MySNSTopic

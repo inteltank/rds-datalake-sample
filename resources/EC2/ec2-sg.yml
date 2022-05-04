@@ -6,15 +6,23 @@ Resources:
       GroupDescription: SG to test ping
       VpcId: !Ref VPC
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 10.0.0.0/24
-        - IpProtocol: icmp
-          FromPort: 8
-          ToPort: -1
-          CidrIp: 10.0.0.0/24
-        - IpProtocol: tcp
+        - IpProtocol: TCP
           FromPort: 443
           ToPort: 443
-          CidrIp: 10.0.1.0/24
+          CidrIp: 10.0.0.0/16
+        - IpProtocol: TCP
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 10.0.0.0/16
+        - IpProtocol: TCP
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 10.0.0.0/16
+        - IpProtocol: ICMP
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 10.0.0.0/16
+        - IpProtocol: TCP
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: sg-0a70762f15a725c22
