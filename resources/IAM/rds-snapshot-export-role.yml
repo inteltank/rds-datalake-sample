@@ -1,19 +1,18 @@
 Resources:
-  StartExportingSnapshotRole:
+  RdsSnapshotExportRole:
     Type: AWS::IAM::Role
     Properties:
-      Path: /my/cust/path/
-      RoleName: ${self:provider.stage}-${self:service}-start-exporting-snapshot-role
+      RoleName: ${self:provider.stage}-${self:service}-rds-snapshot-export-role
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service:
-                - lambda.amazonaws.com
+                - export.rds.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: start-exporting-snapshot-role
+        - PolicyName: print-out-logs
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -24,10 +23,14 @@ Resources:
                   - logs:PutLogEvents
                 Resource:
                   - arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/*:*:*
+        - PolicyName: execute_export-rds-snapshot
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
               - Effect: Allow
                 Action:
-                  - ec2:CreateNetworkInterface
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:DetachNetworkInterface
-                  - ec2:DeleteNetworkInterface
-                Resource: "*"
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/*:*:*

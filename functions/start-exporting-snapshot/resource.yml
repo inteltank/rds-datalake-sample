@@ -6,10 +6,10 @@ start-exporting-snapshot:
   provisionedConcurrency: 3 
   reservedConcurrency: 5 
   tracing: PassThrough 
-  role: StartExportingSnapshotRole
+  role: ExportExecutionLambdaRole
   package:
     patterns:
       - '!**'
       - functions/start-exporting-snapshot/**
   layers:
-   - !Ref SeleniumLambdaLayer
+   - !Ref BasicLambdaLayer
