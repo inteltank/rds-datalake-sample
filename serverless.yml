@@ -14,8 +14,7 @@ provider:
   runtime: python3.8
   stage: ${env:STAGE}
   region: ${env:AWS_DEFAULT_REGION}
-  notificationArns:
-    - arn:aws:sns:ap-northeast-1:618687395710:notice_aws
+  versionFunctions: false # Versioning takes time, but the default setting is versioning every time you deploy.
 
 
 custom:

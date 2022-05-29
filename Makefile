@@ -52,6 +52,18 @@ unit-tests: ## do lambda function@local
 	@cat output.json | jq .
 
 tests: unit-tests
+
+execute-rds-export: ## execute-rds-export via aws-cli
+	aws rds start-export-task \
+		--profile execute-export-rds-snapshot \
+		--export-task-identifier rds-datalake-2022-03 \
+		--source-arn arn:aws:rds:ap-northeast-1:618687395710:snapshot:rds:dev-rds-datalake-2022-05-27-18-05 \
+		--s3-bucket-name dev-rds-datalake-618687395710 \
+		--iam-role-arn arn:aws:iam::618687395710:role/dev-rds-datalake-rds-snapshot-export-role \
+		--region ap-northeast-1 \
+		--kms-key-id 62ad3e07-5baf-42a3-a88e-5b140d49e943
+
+execute-rds-export-with-sls-deploy: deploy execute-rds-export
 	
 help: ## self-documented Makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
