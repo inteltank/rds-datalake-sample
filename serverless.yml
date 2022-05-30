@@ -32,6 +32,7 @@ plugins:
 
 functions:
   - ${file(./functions/start-exporting-snapshot/resource.yml)}
+  - ${file(./functions/start-move-raw-file/resource.yml)}
 
 layers:
   Basic:
