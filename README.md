@@ -31,7 +31,6 @@ Cloud9が正しく利用できるために必要なResource
 - EndpointFrom
   - カスタマイズしたsubnetにcloud9を置く場合、各種AWS serviceにcloud9がaccessできるようにするために必要
   - ない場合はCloud9が立ち上がらない
-
 - InternetGateway
   - VPC内に置かれたAWS ResourceからInternetにaccessするために必要
   - 今回はCloud9からRDSにSQL実行するためのprogramをyum installするために必要
