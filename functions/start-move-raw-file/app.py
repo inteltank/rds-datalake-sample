@@ -6,8 +6,18 @@ WEB_HOOK_URL = "https://hooks.slack.com/services/TEGU16G9Y/BNQV18DDE/BIfOBi35s68
 
 def handler(event, context):
     logger.info(event)
+    client = boto3.client('s3')
+    task_name = event['detail']['SourceIdentifier'].split(":")[1]
+    response = client.list_objects_v2(
+        Bucket = "dev-rds-datalake-618687395710",
+        Prefix = task_name
+        )
+    text = "task'{}' is conpleted\n```".format(task_name)
+    for i in response['Contents']:
+        text += "{}\n".format(i['Key'])
+    text += "```"
     payload = {
-            "text": "```{}```".format(json.dumps(event,indent=4))
+            "text": text
             }
     response = requests.post(WEB_HOOK_URL,data=json.dumps(payload))
     logger.info(response)

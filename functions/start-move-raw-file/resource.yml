@@ -6,7 +6,7 @@ start-move-raw-file:
   provisionedConcurrency: 3 
   reservedConcurrency: 5 
   tracing: PassThrough 
-  role: ExportExecutionLambdaRole
+  role: MoveRawFileRole
   package:
     patterns:
       - '!**'
@@ -15,7 +15,9 @@ start-move-raw-file:
     - eventBridge:
         pattern:
           source: 
-            - aws.s3
             - aws.rds
+          detail:
+            Message: 
+              - "Export task completed"
   layers:
    - !Ref BasicLambdaLayer

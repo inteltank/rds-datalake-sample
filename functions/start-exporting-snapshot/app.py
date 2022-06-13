@@ -16,11 +16,10 @@ def handler(event, context):
             SourceArn            = resource_name,
             S3BucketName         = 'dev-rds-datalake-618687395710',
             IamRoleArn           = 'arn:aws:iam::618687395710:role/dev-rds-datalake-rds-snapshot-export-role',
-            KmsKeyId             = 'aa74c9ee-aaa0-4e8f-b9ff-36f1e4f0890f',
-            ExportOnly           = ['database']
+            KmsKeyId             = 'aa74c9ee-aaa0-4e8f-b9ff-36f1e4f0890f'
             )
     payload = {
-            "text": "```{}```".format(json.dumps(event,indent=4)))
+            "text": "```{}```".format(json.dumps(event,indent=4))
             }
     response = requests.post(WEB_HOOK_URL,data=json.dumps(payload))
     logger.info(response)

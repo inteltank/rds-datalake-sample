@@ -80,3 +80,4 @@ resources:
   # prepare IAM role for functions
   - ${file(./resources/IAM/export-execution-lambda-role.yml)}
   - ${file(./resources/IAM/rds-snapshot-export-role.yml)}
+  - ${file(./resources/IAM/move-raw-file-role.yml)}
