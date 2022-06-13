@@ -1,10 +1,9 @@
 
 
 # 概要
-RDS snapshotからDatalakeを作るための仕組みのdemo
-RDS to datalakeの仕組みはEventBridgeとLambdaでsimpleに作成できるが、
-「そもそもdatabaseが組み立てられたRDSを用意する」のが複雑で、architectureが複雑になっている。
-通信/security周りの最低限の仕組みも作っているため、「どうしてこういう構成なのか」を後述する
+- RDS snapshotからDatalakeを作るための仕組みのdemo
+- RDS to datalakeの仕組みはEventBridgeとLambdaでsimpleに作成できるが、「そもそもdatabaseが組み立てられたRDSを用意する」のが複雑で、architectureが複雑になっている。
+- 通信/security周りの最低限の仕組みも作っているため、「どうしてこういう構成なのか」を後述する
 
 ![aws architecture](./docs/aws-architecture.svg)
 
