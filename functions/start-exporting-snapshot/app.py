@@ -2,7 +2,7 @@ import requests json
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-WEB_HOOK_URL = "https://hooks.slack.com/services/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"
+WEB_HOOK_URL = "https://hooks.slack.com/services/******"
 
 def handler(event, context):
     options = Options()
