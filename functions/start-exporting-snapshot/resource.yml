@@ -6,10 +6,23 @@ start-exporting-snapshot:
   provisionedConcurrency: 3 
   reservedConcurrency: 5 
   tracing: PassThrough 
-  role: StartExportingSnapshotRole
+  role: ExportExecutionLambdaRole
   package:
     patterns:
       - '!**'
       - functions/start-exporting-snapshot/**
+  events:
+    - eventBridge:
+        pattern:
+          source: 
+            - aws.rds
+          detail-type:
+            - "RDS DB Snapshot Event"
+          detail:
+            EventCategories:
+              - creation
+            Message:
+              - "Automated snapshot created"
+
   layers:
-   - !Ref SeleniumLambdaLayer
+   - !Ref BasicLambdaLayer

@@ -1,0 +1,23 @@
+start-move-raw-file:
+  handler: functions/start-move-raw-file/app.handler
+  name: ${self:provider.stage}-${self:service}-start-move-raw-file
+  memorySize: 512 
+  timeout: 10 
+  provisionedConcurrency: 3 
+  reservedConcurrency: 5 
+  tracing: PassThrough 
+  role: MoveRawFileRole
+  package:
+    patterns:
+      - '!**'
+      - functions/start-move-raw-file/**
+  events:
+    - eventBridge:
+        pattern:
+          source: 
+            - aws.rds
+          detail:
+            Message: 
+              - "Export task completed"
+  layers:
+   - !Ref BasicLambdaLayer

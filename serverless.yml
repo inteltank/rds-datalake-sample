@@ -14,8 +14,7 @@ provider:
   runtime: python3.8
   stage: ${env:STAGE}
   region: ${env:AWS_DEFAULT_REGION}
-  notificationArns:
-    - arn:aws:sns:ap-northeast-1:618687395710:notice_aws
+  versionFunctions: false # Versioning takes time, but the default setting is versioning every time you deploy.
 
 
 custom:
@@ -33,11 +32,12 @@ plugins:
 
 functions:
   - ${file(./functions/start-exporting-snapshot/resource.yml)}
+  - ${file(./functions/start-move-raw-file/resource.yml)}
 
 layers:
-  Selenium:
-    name: selenium-layer
-    path: layers/selenium
+  Basic:
+    name: basic-layer
+    path: layers/basic
     compatibleRuntimes:
       - python3.8
     compatibleArchitectures:
@@ -59,15 +59,15 @@ resources:
   - ${file(./resources/RDS/instance.yml)}
 
   # pre-build a Network to connet between Cloud9 & EC2
-  - ${file(./resources/EC2/public-subnet.yml)}
-  - ${file(./resources/EC2/vpc-endpoints.yml)}
-  - ${file(./resources/EC2/ec2-internet-gw.yml)}
-  - ${file(./resources/EC2/ec2-route-tables.yml)}
-  - ${file(./resources/EC2/ec2-elastic-ip.yml)}
-  - ${file(./resources/EC2/ec2-natgateway.yml)}
+  # - ${file(./resources/EC2/public-subnet.yml)}
+  # - ${file(./resources/EC2/vpc-endpoints.yml)}
+  # - ${file(./resources/EC2/ec2-internet-gw.yml)}
+  # - ${file(./resources/EC2/ec2-route-tables.yml)}
+  # - ${file(./resources/EC2/ec2-elastic-ip.yml)}
+  # - ${file(./resources/EC2/ec2-natgateway.yml)}
 
   # build Cloud9 to execute SQL to RDS
-  - ${file(./resources/Cloud9/RDS-manager.yml)}
+  # - ${file(./resources/Cloud9/RDS-manager.yml)}
 
   # make Snapshot Pool
   #  - ${file(./resources/KMS/S3Bucket-Key.yml)}
@@ -78,4 +78,6 @@ resources:
   - ${file(./resources/EventBridge/create-snapshot.yml)}
 
   # prepare IAM role for functions
-  - ${file(./resources/IAM/start-exporting-snapshot-role.yml)}
+  - ${file(./resources/IAM/export-execution-lambda-role.yml)}
+  - ${file(./resources/IAM/rds-snapshot-export-role.yml)}
+  - ${file(./resources/IAM/move-raw-file-role.yml)}

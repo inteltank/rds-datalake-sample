@@ -1,22 +1,25 @@
-import requests json
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-
+import requests,json,boto3
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+from boto3.session import Session
 WEB_HOOK_URL = "https://hooks.slack.com/services/******"
 
 def handler(event, context):
-    options = Options()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome('/opt/chromedriver', options=options)
-    driver.get('https://www.google.co.jp')
-
-    search_bar = driver.find_element_by_name("q")
-    search_bar.send_keys('python')
-    serach_bar.submit()
-
-    for hrem_h3 in driver.find_element_by_xpath('//a/h3'):
-        elem_a = elem_h3.find_element_by_xpath('..')
-        return(elem_h3.text)
-    requests.post(WEB_HOOK_URL,data=json.dumps({
-        "text":"Hello World"
-        }))
+    
+    logger.info(event)
+    client = boto3.client('rds')
+    resource_name = event['resources'][0]
+    task_name = event['detail']['SourceIdentifier'].split(":")[1]
+    response = client.start_export_task(
+            ExportTaskIdentifier = task_name,
+            SourceArn            = resource_name,
+            S3BucketName         = 'dev-rds-datalake-618687395710',
+            IamRoleArn           = 'arn:aws:iam::618687395710:role/dev-rds-datalake-rds-snapshot-export-role',
+            KmsKeyId             = 'aa74c9ee-aaa0-4e8f-b9ff-36f1e4f0890f'
+            )
+    payload = {
+            "text": "```{}```".format(json.dumps(event,indent=4))
+            }
+    response = requests.post(WEB_HOOK_URL,data=json.dumps(payload))
+    logger.info(response)

@@ -1,0 +1,56 @@
+Resources:
+  MoveRawFileRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${self:provider.stage}-${self:service}-move-raw-file-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+              #      ManagedPolicyArns:
+              #        - arn:aws:iam::aws:policy/AdministratorAccess 
+      Policies:
+        - PolicyName: print-out-logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/*:*:*
+        - PolicyName: move-raw-file-role
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                Resource:
+                  - arn:aws:s3:::*
+              - Effect: Allow
+                Action:
+                  - s3:PutObject*
+                  - s3:GetObject*
+                  - s3:DeleteObject*
+                Resource:
+                  - arn:aws:s3:::dev-rds-datalake-618687395710
+                  - arn:aws:s3:::dev-rds-datalake-618687395710/*
+              - Effect: Allow
+                Action:
+                  - kms:Encrypt
+                  - kms:Decrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                  - kms:CreateCrant
+                  - kms:DescribeKey
+                  - kms:RetireGrant
+                Resource:
+                  - arn:aws:kms:ap-northeast-1:618687395710:key/62ad3e07-5baf-42a3-a88e-5b140d49e943
